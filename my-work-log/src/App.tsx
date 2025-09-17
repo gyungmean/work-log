@@ -148,7 +148,7 @@ const App: React.FC = () => {
             };
         };
 
-        addSection(21, "진행 PROJECT 현황 및\nISSUE 사항", projectIssue);
+        addSection(21, "진행 PROJECT 현황 및\r\nISSUE 사항", projectIssue);
         addSection(24, "개발, 개선 활동", devImprove);
         addSection(27, "출장, 연차, 휴가 계획", vacation);
 
