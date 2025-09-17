@@ -3,6 +3,7 @@ import { format, addDays, getWeek, getMonth } from "date-fns";
 import { ko } from "date-fns/locale";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
+import "./App.css";
 import InputField from "./components/InputField";
 import DailyTaskInput from "./components/InputDailTask";
 import TextAreaField from "./components/InputAreaField";
@@ -138,7 +139,11 @@ const App: React.FC = () => {
                 size: 12,
                 bold: true,
             };
-            aCell.alignment = { vertical: "middle", horizontal: "center" };
+            aCell.alignment = {
+                vertical: "middle",
+                horizontal: "center",
+                wrapText: true,
+            };
 
             // B열 병합 (내용)
             sheet.mergeCells(`B${row}:B${row + 2}`);
@@ -151,7 +156,7 @@ const App: React.FC = () => {
             };
         };
 
-        addSection(21, "진행 PROJECT 현황 및\r\nISSUE 사항", projectIssue);
+        addSection(21, "진행 PROJECT 현황 및 ISSUE 사항", projectIssue);
         addSection(24, "개발, 개선 활동", devImprove);
         addSection(27, "출장, 연차, 휴가 계획", vacation);
 
@@ -175,12 +180,26 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="d-flex justify-content-center">
+        <div
+            style={{
+                width: "100%",
+                minHeight: "100%",
+                backgroundColor: "#0d3964ff",
+                display: "flex",
+                justifyContent: "center",
+                padding: "50px 0",
+            }}
+        >
             <div
-                className="mx-auto"
-                style={{ maxWidth: 600, marginTop: "50px" }}
+                className="card p-4"
+                style={{
+                    maxWidth: 700,
+                    width: "100%",
+                    borderRadius: "15px",
+                    boxShadow: "0 4px 15px rgba(0,0,0,0.3)",
+                }}
             >
-                <h1 className="mb-4 text-center">📑 개인 업무 일지 작성</h1>
+                <h2 className="mb-4 text-center">📑 개인 업무 일지 작성</h2>
 
                 <InputField
                     label="날짜"
@@ -201,7 +220,7 @@ const App: React.FC = () => {
                     onChange={setWriter}
                 />
 
-                <h3>업무 내용</h3>
+                <h5 className="mt-4">💼 업무 내용</h5>
                 {date &&
                     getWorkDays(new Date(date)).map((d) => (
                         <DailyTaskInput
@@ -239,7 +258,10 @@ const App: React.FC = () => {
                     onChange={setVacation}
                 />
 
-                <button className="btn btn-danger w-100" onClick={handleExport}>
+                <button
+                    className="btn btn-secondary btn-lg w-100"
+                    onClick={handleExport}
+                >
                     📥 엑셀 다운로드
                 </button>
             </div>
