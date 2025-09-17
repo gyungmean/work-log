@@ -156,7 +156,7 @@ const App: React.FC = () => {
         const buffer = await workbook.xlsx.writeBuffer();
         saveAs(
             new Blob([buffer]),
-            `업무일지_${month}월_${weekNumber}주차.xlsx`
+            `${format(new Date(), "yyyyMMdd")}-개인업무일지-${writer}.xlsx`
         );
     };
 
