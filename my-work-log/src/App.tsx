@@ -85,7 +85,7 @@ const App: React.FC = () => {
         sheet.getCell("C4").font = { name: "맑은 고딕", size: 14 };
 
         // A5:C5
-        sheet.getRow(5).height = 25;
+        sheet.getRow(5).height = 40;
         sheet.getCell("B5").value = `금주 실적 (${format(
             workDays[0],
             "MM월 dd일"
@@ -125,6 +125,12 @@ const App: React.FC = () => {
             const aCell = sheet.getCell(`A${rowIndex}`);
             aCell.value = format(d, "MM/dd (EEE)", { locale: ko });
             aCell.alignment = { vertical: "middle", horizontal: "center" };
+            aCell.border = {
+                top: { style: "thin" },
+                left: { style: "thin" },
+                bottom: { style: "thin" },
+                right: { style: "thin" },
+            };
 
             // 업무내용 입력칸 (3행씩)
             sheet.mergeCells(`B${rowIndex}:B${rowIndex + 2}`);
@@ -134,6 +140,12 @@ const App: React.FC = () => {
                 vertical: "top",
                 horizontal: "left",
                 wrapText: true,
+            };
+            bCell.border = {
+                top: { style: "thin" },
+                left: { style: "thin" },
+                bottom: { style: "thin" },
+                right: { style: "thin" },
             };
 
             rowIndex += 3;
@@ -154,6 +166,12 @@ const App: React.FC = () => {
                 horizontal: "center",
                 wrapText: true,
             };
+            aCell.border = {
+                top: { style: "thin" },
+                left: { style: "thin" },
+                bottom: { style: "thin" },
+                right: { style: "thin" },
+            };
 
             // B열 병합 (내용)
             sheet.mergeCells(`B${row}:B${row + 2}`);
@@ -164,23 +182,17 @@ const App: React.FC = () => {
                 horizontal: "left",
                 wrapText: true,
             };
+            bCell.border = {
+                top: { style: "thin" },
+                left: { style: "thin" },
+                bottom: { style: "thin" },
+                right: { style: "thin" },
+            };
         };
 
         addSection(21, "진행 PROJECT 현황 및 ISSUE 사항", projectIssue);
         addSection(24, "개발, 개선 활동", devImprove);
         addSection(27, "출장, 연차, 휴가 계획", vacation);
-
-        // 전체 테두리
-        sheet.eachRow((row) => {
-            row.eachCell((cell) => {
-                cell.border = {
-                    top: { style: "thin" },
-                    left: { style: "thin" },
-                    bottom: { style: "thin" },
-                    right: { style: "thin" },
-                };
-            });
-        });
 
         const buffer = await workbook.xlsx.writeBuffer();
         saveAs(
