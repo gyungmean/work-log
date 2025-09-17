@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { format, addDays, getWeek, getMonth } from "date-fns";
+import {
+    format,
+    addDays,
+    getISOWeek,
+    startOfMonth,
+    endOfMonth,
+} from "date-fns";
 import { ko } from "date-fns/locale";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
@@ -37,10 +43,12 @@ const App: React.FC = () => {
         const startDate = new Date(date);
         const workDays = getWorkDays(startDate);
 
-        const month = getMonth(startDate) + 1;
-        const weekNumber = getWeek(startDate, { locale: ko });
-        const startWeek = getWeek(workDays[0], { locale: ko });
-        const endWeek = getWeek(workDays[4], { locale: ko });
+        const firstDayOfMonth = startOfMonth(startDate);
+        const monthWeekNumber =
+            getISOWeek(startDate) - getISOWeek(firstDayOfMonth) + 1;
+
+        const startWeekISO = getISOWeek(firstDayOfMonth);
+        const endWeekISO = getISOWeek(endOfMonth(startDate));
 
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet("개인 업무 일지");
@@ -57,7 +65,9 @@ const App: React.FC = () => {
         // A2:C2
         sheet.mergeCells("A2:C2");
         const a2 = sheet.getCell("A2");
-        a2.value = `${month}월 ${weekNumber}주차 주간업무 실적 및 계획 (${startWeek}-${endWeek}주차)`;
+        a2.value = `${
+            startDate.getMonth() + 1
+        }월 ${monthWeekNumber}주차 주간업무 실적 및 계획 (${startWeekISO}~${endWeekISO}주차)`;
         a2.font = { name: "맑은 고딕", size: 24, underline: true };
         a2.alignment = { horizontal: "center", vertical: "middle" };
 
