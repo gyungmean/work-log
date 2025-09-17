@@ -41,6 +41,11 @@ const App: React.FC = () => {
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet("개인 업무 일지");
 
+        //열 넓이지정
+        sheet.getColumn(1).width = 25; //A
+        sheet.getColumn(2).width = 75; //B
+        sheet.getColumn(3).width = 45; //C
+
         // A1
         sheet.getCell("A1").value = "개인작성 시트";
         sheet.getCell("A1").font = { name: "맑은 고딕", size: 11, bold: true };
@@ -120,24 +125,30 @@ const App: React.FC = () => {
             rowIndex += 3;
         });
 
-        // 📌 추가 섹션
         const addSection = (row: number, title: string, value: string) => {
-            sheet.getCell(`A${row}`).value = title;
-            sheet.getCell(`A${row}`).font = {
+            // A열 병합 (제목)
+            sheet.mergeCells(`A${row}:A${row + 2}`);
+            const aCell = sheet.getCell(`A${row}`);
+            aCell.value = title;
+            aCell.font = {
                 name: "맑은 고딕",
                 size: 12,
                 bold: true,
             };
+            aCell.alignment = { vertical: "middle", horizontal: "center" };
+
+            // B열 병합 (내용)
             sheet.mergeCells(`B${row}:B${row + 2}`);
-            sheet.getCell(`B${row}`).value = value;
-            sheet.getCell(`B${row}`).alignment = {
+            const bCell = sheet.getCell(`B${row}`);
+            bCell.value = value;
+            bCell.alignment = {
                 vertical: "top",
                 horizontal: "left",
                 wrapText: true,
             };
         };
 
-        addSection(21, "진행 PROJECT 현황 및 ISSUE 사항", projectIssue);
+        addSection(21, "진행 PROJECT 현황 및\nISSUE 사항", projectIssue);
         addSection(24, "개발, 개선 활동", devImprove);
         addSection(27, "출장, 연차, 휴가 계획", vacation);
 
