@@ -3,6 +3,9 @@ import { format, addDays, getWeek, getMonth } from "date-fns";
 import { ko } from "date-fns/locale";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
+import InputField from "./components/InputField";
+import DailyTaskInput from "./components/InputDailTask";
+import TextAreaField from "./components/InputAreaField";
 
 const App: React.FC = () => {
     const [date, setDate] = useState<string>("");
@@ -172,72 +175,74 @@ const App: React.FC = () => {
     };
 
     return (
-        <div style={{ padding: 20 }}>
-            <h1>📑 개인 업무 일지 작성</h1>
-            <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-            />
-            <input
-                placeholder="팀명"
-                value={team}
-                onChange={(e) => setTeam(e.target.value)}
-            />
-            <input
-                placeholder="작성자"
-                value={writer}
-                onChange={(e) => setWriter(e.target.value)}
-            />
+        <div className="d-flex justify-content-center">
+            <div
+                className="mx-auto"
+                style={{ maxWidth: 600, marginTop: "50px" }}
+            >
+                <h1 className="mb-4 text-center">📑 개인 업무 일지 작성</h1>
 
-            <h3>업무 내용</h3>
-            {date &&
-                getWorkDays(new Date(date)).map((d) => (
-                    <div key={d.toDateString()}>
-                        {format(d, "MM/dd (EEE)", { locale: ko })} :
-                        <textarea
-                            style={{ width: 400, height: 60 }}
+                <InputField
+                    label="날짜"
+                    type="date"
+                    value={date}
+                    onChange={setDate}
+                />
+                <InputField
+                    label="팀명"
+                    placeholder="팀명"
+                    value={team}
+                    onChange={setTeam}
+                />
+                <InputField
+                    label="작성자"
+                    placeholder="작성자"
+                    value={writer}
+                    onChange={setWriter}
+                />
+
+                <h3>업무 내용</h3>
+                {date &&
+                    getWorkDays(new Date(date)).map((d) => (
+                        <DailyTaskInput
+                            key={d.toDateString()}
+                            date={d}
                             value={tasks[d.toDateString()] || ""}
-                            onChange={(e) =>
-                                setTasks({
-                                    ...tasks,
-                                    [d.toDateString()]: e.target.value,
-                                })
+                            onChange={(v) =>
+                                setTasks({ ...tasks, [d.toDateString()]: v })
                             }
                         />
-                    </div>
-                ))}
+                    ))}
 
-            <h3>차주 계획</h3>
-            <textarea
-                style={{ width: 400, height: 120 }}
-                value={nextPlan}
-                onChange={(e) => setNextPlan(e.target.value)}
-            />
+                <TextAreaField
+                    label="차주 계획"
+                    rows={6}
+                    value={nextPlan}
+                    onChange={setNextPlan}
+                />
+                <TextAreaField
+                    label="진행 PROJECT 현황 및 ISSUE 사항"
+                    rows={4}
+                    value={projectIssue}
+                    onChange={setProjectIssue}
+                />
+                <TextAreaField
+                    label="개발, 개선 활동"
+                    rows={4}
+                    value={devImprove}
+                    onChange={setDevImprove}
+                />
+                <TextAreaField
+                    label="출장, 연차, 휴가 계획"
+                    rows={4}
+                    value={vacation}
+                    onChange={setVacation}
+                />
 
-            <h3>진행 PROJECT 현황 및 ISSUE 사항</h3>
-            <textarea
-                style={{ width: 400, height: 80 }}
-                value={projectIssue}
-                onChange={(e) => setProjectIssue(e.target.value)}
-            />
-
-            <h3>개발, 개선 활동</h3>
-            <textarea
-                style={{ width: 400, height: 80 }}
-                value={devImprove}
-                onChange={(e) => setDevImprove(e.target.value)}
-            />
-
-            <h3>출장, 연차, 휴가 계획</h3>
-            <textarea
-                style={{ width: 400, height: 80 }}
-                value={vacation}
-                onChange={(e) => setVacation(e.target.value)}
-            />
-
-            <br />
-            <button onClick={handleExport}>📥 엑셀 다운로드</button>
+                <button className="btn btn-danger w-100" onClick={handleExport}>
+                    📥 엑셀 다운로드
+                </button>
+            </div>
         </div>
     );
 };
