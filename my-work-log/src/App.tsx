@@ -243,7 +243,7 @@ const App: React.FC = () => {
                     boxShadow: "0 4px 15px rgba(0,0,0,0.3)",
                 }}
             >
-                <h2 className="mb-4 text-center">📑 개인 업무 일지 작성</h2>
+                <h2 className="mb-4 text-center">📑 개인 업무 일지 생성기</h2>
 
                 <InputField
                     label="날짜"
