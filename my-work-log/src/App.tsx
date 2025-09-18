@@ -82,6 +82,10 @@ const App: React.FC = () => {
             new Date(),
             "yyyy-MM-dd"
         )})`;
+        sheet.getCell("C4").alignment = {
+            vertical: "middle",
+            horizontal: "right",
+        };
         sheet.getCell("C4").font = { name: "맑은 고딕", size: 14 };
 
         // A5:C5
@@ -90,7 +94,13 @@ const App: React.FC = () => {
             workDays[0],
             "MM월 dd일"
         )} ~ ${format(workDays[4], "MM월 dd일")})`;
-        sheet.getCell("C5").value = `차주 계획`;
+        const nextWeekStart = addDays(workDays[0], 7);
+        const nextWeekEnd = addDays(workDays[4], 7);
+
+        sheet.getCell("C5").value = `차주 계획 (${format(
+            nextWeekStart,
+            "MM월 dd일"
+        )} ~ ${format(nextWeekEnd, "MM월 dd일")})`;
         ["A5", "B5", "C5"].forEach((key) => {
             const cell = sheet.getCell(key);
             cell.font = { name: "맑은 고딕", size: 14, bold: true };
@@ -116,11 +126,20 @@ const App: React.FC = () => {
             horizontal: "left",
             wrapText: true,
         };
+        sheet.getCell("C6").border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+        };
 
         // 날짜 및 업무내용
         let rowIndex = 6;
         workDays.forEach((d) => {
             // 날짜 병합 (3행씩)
+            for (let i = rowIndex; i < rowIndex + 3; i++) {
+                sheet.getRow(i).height = 30;
+            }
             sheet.mergeCells(`A${rowIndex}:A${rowIndex + 2}`);
             const aCell = sheet.getCell(`A${rowIndex}`);
             aCell.value = format(d, "MM/dd (EEE)", { locale: ko });
@@ -153,6 +172,9 @@ const App: React.FC = () => {
 
         const addSection = (row: number, title: string, value: string) => {
             // A열 병합 (제목)
+            for (let i = row; i < row + 3; i++) {
+                sheet.getRow(i).height = 30;
+            }
             sheet.mergeCells(`A${row}:A${row + 2}`);
             const aCell = sheet.getCell(`A${row}`);
             aCell.value = title;
